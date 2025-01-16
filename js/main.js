@@ -14,7 +14,9 @@ const fetchWeather = async (latitude, longitude) => {
 
         const data = await response.json()
 
-        const description = getWeatherDescription(data.current_weather.weathercode)
+        const weatherCode = data.current_weather.weathercode
+        console.log('Weather Code:', weatherCode) 
+        const description = getWeatherDescription(weatherCode)
 
         const result = `
             <p>Temperature: ${data.current_weather.temperature}°C</p>
