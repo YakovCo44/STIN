@@ -11,16 +11,13 @@ const fetchWeather = async (latitude, longitude) => {
         if (!response.ok) throw new Error('Failed to fetch weather data')
 
         const data = await response.json()
-
         const weatherCode = data.current_weather.weathercode
         console.log('Weather Code:', weatherCode) 
         const description = getWeatherDescription(weatherCode)
-
         const result = `
             <p>Temperature: ${data.current_weather.temperature}°C</p>
             <p>Weather: ${description}</p>
-            <p>Windspeed: ${data.current_weather.windspeed} km/h</p>
-        `
+            <p>Windspeed: ${data.current_weather.windspeed} km/h</p>`
         document.getElementById('weatherResult').innerHTML = result
     } catch (error) {
         console.error('Error fetching weather data:', error)
