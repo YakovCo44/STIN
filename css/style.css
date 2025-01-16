@@ -63,6 +63,10 @@ body, html {
     outline: none;
 }
 
+.convert{
+    display: grid;
+}
+
 #currency-converter {
     margin: 20px;
     text-align: center;
