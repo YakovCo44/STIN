@@ -5,13 +5,51 @@ const cityInput = document.getElementById('city')
 const citySuggestions = document.getElementById('citySuggestions')
 const weatherResult = document.getElementById('weatherResult')
 
-const fetchWeather = city => {
-    const encodedCity = encodeURIComponent(city) 
-    fetch(`https://api.openweathermap.org/data/2.5/weather?q=${encodedCity}&appid=${WEATHER_API_KEY}&units=metric`)
-        .then(response => response.json())
-        .then(data => displayWeather(data))
-        .catch(error => handleError('Error fetching weather data', error))
+const fetchWeather = async (latitude, longitude) => {
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`
+
+    try {
+        const response = await fetch(url)
+        if (!response.ok) throw new Error('Failed to fetch weather data')
+
+        const data = await response.json()
+
+        const result = `
+            <p>Temperature: ${data.current_weather.temperature}°C</p>
+            <p>Weather: ${data.current_weather.weathercode}</p>
+            <p>Windspeed: ${data.current_weather.windspeed} km/h</p>
+        `
+        document.getElementById('weatherResult').innerHTML = result
+    } catch (error) {
+        console.error('Error fetching weather data:', error)
+        document.getElementById('weatherResult').innerHTML = '<p>Error fetching weather data</p>'
+    }
 }
+
+document.getElementById('getWeather').addEventListener('click', async () => {
+    const city = document.getElementById('city').value.trim()
+    if (!city) {
+        alert('Please enter a city name')
+        return
+    }
+
+    try {
+        const response = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1&language=en&format=json`)
+        if (!response.ok) throw new Error('City not found')
+
+        const data = await response.json()
+
+        if (data.results && data.results.length > 0) {
+            const { latitude, longitude } = data.results[0]
+            fetchWeather(latitude, longitude) 
+        } else {
+            document.getElementById('weatherResult').innerHTML = '<p>City not found</p>'
+        }
+    } catch (error) {
+        console.error('Error fetching city coordinates:', error)
+        document.getElementById('weatherResult').innerHTML = '<p>Error fetching city coordinates</p>'
+    }
+})
 
 const displayWeather = data => {
     if (data.cod === 200) {
