@@ -63,10 +63,6 @@ body, html {
     outline: none;
 }
 
-.convert{
-    display: grid;
-}
-
 #currency-converter {
     margin: 20px;
     text-align: center;
@@ -87,7 +83,6 @@ body, html {
     margin: 25px;
 }
 
-
 footer {
     background-color: #333; 
     color: #fff; 
@@ -100,6 +95,7 @@ footer {
 footer a {
     color: #fff; 
     text-decoration: none;
+    margin: 25px;
 }
 
 footer a:hover {
