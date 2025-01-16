@@ -1,0 +1,119 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    min-height: 100%; 
+    display: flex;
+    flex-direction: column;
+}
+
+#logo-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    border-radius: 25px;
+    margin: 20px;
+}
+
+#stin-logo {
+    max-width: 300px; 
+    height: auto; 
+    border-radius: 25px;
+}
+
+#weather {
+    margin: 20px;
+    text-align: center;
+}
+
+#weather input {
+    padding: 10px;
+    width: 200px;
+    margin-right: 10px;
+}
+
+#weather button {
+    padding: 10px 15px;
+    cursor: pointer;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+#weather button:hover{
+    background-color: #044183;
+}
+
+#weatherResult {
+    margin-top: 20px;
+    font-size: 1.2em;
+    color: #333;
+}
+
+#city {
+    width: 300px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#city:focus {
+    border-color: #007BFF;
+    outline: none;
+}
+
+#currency-converter {
+    margin: 20px;
+    text-align: center;
+}
+
+#currency-converter input,
+#currency-converter select,
+#currency-converter button {
+    padding: 10px;
+    margin: 5px;
+    font-size: 1em;
+}
+
+#conversion-result {
+    margin-top: 20px;
+    font-size: 1.2em;
+    color: #333;
+}
+
+
+footer {
+    background-color: #333; 
+    color: #fff; 
+    text-align: center;
+    padding: 10px 20px; 
+    position: relative;
+    box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.2); 
+}
+
+footer a {
+    color: #fff; 
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    #weather input {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    #weather button {
+        width: 100%;
+    }
+}
+
+
+
+
+
+

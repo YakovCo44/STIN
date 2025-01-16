@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+    <title>STIN - Small Things I Need</title>
+</head>
+<body>
+    <div id="logo-container">
+        <img src="img/logo.png" alt="STIN Logo" id="stin-logo">
+    </div>
+
+    <main id="app">
+        <section id="weather">
+            <h2>Weather Forecast</h2>
+            <input type="text" id="city" list="citySuggestions" placeholder="Enter a city name">
+            <datalist id="citySuggestions"></datalist>
+            <button id="getWeather">Get Weather</button>
+            <div id="weatherResult"></div>
+        </section>
+        <section id="currency-converter">
+            <h2>Currency Converter</h2>
+            <div>
+                <input type="number" id="amount" placeholder="Enter amount" />
+                <select id="from-currency">
+                </select>
+                <span>to</span>
+                <select id="to-currency">
+                </select>
+                <button id="convert">Convert</button>
+            </div>
+            <div id="coversion-result"></div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 STIN. All rights reserved.</p>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
