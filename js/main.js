@@ -171,26 +171,34 @@ const convertCurrency = async () => {
     const amount = document.getElementById('amount').value
     const fromCurrency = document.getElementById('from-currency').value
     const toCurrency = document.getElementById('to-currency').value
+    const resultContainer = document.getElementById('conversion-result')
+
+    if (!resultContainer) {
+        console.error('Conversion result container not found')
+        return
+    }
+
     if (!amount || isNaN(amount)) {
         alert('Please enter a valid amount')
         return
     }
+
     try {
         const response = await fetch(`${CURRENCY_API_URL}/${fromCurrency}`)
         const data = await response.json()
         const conversionRate = data.rates[toCurrency]
         if (conversionRate) {
             const result = (amount * conversionRate).toFixed(2)
-            document.getElementById('conversion-result').textContent = 
-                `${amount} ${fromCurrency} = ${result} ${toCurrency}`
+            resultContainer.textContent = `${amount} ${fromCurrency} = ${result} ${toCurrency}`
         } else {
-            document.getElementById('conversion-result').textContent = 
-                'Conversion rate not available'
+            resultContainer.textContent = 'Conversion rate not available'
         }
     } catch (error) {
         console.error('Error converting currency:', error)
+        resultContainer.textContent = 'Error fetching conversion rate'
     }
 }
+
 
 document.getElementById('convert').addEventListener('click', convertCurrency)
 
