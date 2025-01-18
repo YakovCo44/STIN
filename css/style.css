@@ -1,11 +1,12 @@
+/* General Styles */
 body,
 html {
   margin: 0;
   padding: 0;
   min-height: 100%;
   font-family: 'Roboto', sans-serif;
-  color: #f0f0f0; 
-  background: #1a1a1a; 
+  color: #f0f0f0; /* Light text */
+  background: #1a1a1a; /* Dark background */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -26,25 +27,30 @@ html {
 /* Main Grid Layout */
 main {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Uniform width */
+  grid-auto-rows: auto; /* Height adjusts based on content */
+  gap: 20px; /* Space between blocks */
   width: 90%;
   max-width: 1200px;
   margin: 20px auto;
+  align-items: start; /* Aligns blocks to the top */
+  justify-items: stretch; /* Stretches blocks to fit column width */
+  grid-auto-flow: dense; /* Fills gaps in the layout efficiently */
+  grid-template-rows: auto 1fr;
 }
 
-/* Feature Block Styles */
+/* Block Styles */
 .feature-block {
-  background: #242424; 
-  border-radius: 10px;
-  padding: 20px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-  transition: transform 0.2s ease, box-shadow 0.3s ease;
   display: flex;
-  flex-direction: column; 
-  align-items: center; 
-  justify-content: center; 
-  text-align: center; 
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  text-align: center;
+  background: #242424;
+  border-radius: 25px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .feature-block:hover {
@@ -54,10 +60,18 @@ main {
 
 .feature-block h2 {
   font-size: 1.5em;
-  text-transform: uppercase;
   margin-bottom: 15px;
-  color: #f0f0f0; 
-  text-shadow: 0 0 5px #00bfff;
+  color: #00bfff; /* Neon blue for headings */
+  text-shadow: 0 0 10px #00bfff;
+}
+
+.feature-block input,
+.feature-block select,
+.feature-block button,
+.feature-block textarea {
+  margin-bottom: 15px; /* Add spacing between elements */
+  width: 90%; /* Adjust width to prevent overflow */
+  max-width: 300px; /* Keep inputs/buttons compact */
 }
 
 /* Buttons */
@@ -82,6 +96,7 @@ button:active {
   transform: translateY(1px);
 }
 
+/* Inputs and Textareas */
 input,
 select,
 textarea {
@@ -95,13 +110,12 @@ textarea {
   box-sizing: border-box;
 }
 
-.feature-block input,
-.feature-block select,
-.feature-block textarea,
-.feature-block button {
-  margin-bottom: 10px;
-  width: auto; 
-  max-width: 90%; 
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: #00bfff;
+  box-shadow: 0 0 10px #00bfff;
 }
 
 /* Weather Section */
@@ -118,6 +132,13 @@ textarea {
   color: #e0e0e0;
 }
 
+#currency-converter span {
+  margin: 20px; /* Space around the "to" text */
+  color: #00bfff; /* Matches button styles */
+  font-weight: bold;
+  font-size: 1em;
+}
+
 /* Translator */
 #translation-result {
   margin-top: 20px;
@@ -125,42 +146,161 @@ textarea {
   color: #e0e0e0;
 }
 
+#to-currency,
+#source-lang,
+#target-lang {
+  margin: 10px;
+}
+
+#translator label {
+  margin: 20px; /* Add spacing between dropdowns and labels */
+  color: #00bfff;
+  font-size: 1em;
+  font-weight: bold;
+}
+
 /* Calculator */
 #calc-container {
-  display: grid;
-  grid-template-rows: auto auto;
-  gap: 10px;
+  width: 100%;
+  max-width: 320px; /* Ensure a consistent width */
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  background: #242424; /* Match the block style */
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center contents horizontally */
+  justify-content: center; /* Center contents vertically */
 }
 
 #calc-input {
+  width: 100%;
   font-size: 2em;
-  text-align: right;
+  padding: 10px;
+  border: none;
   background: #1a1a1a;
   color: #00bfff;
-  border: none;
-  padding: 10px;
   border-radius: 5px;
+  text-align: right;
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
 }
 
 #calc-buttons {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
+  grid-template-columns: repeat(4, 1fr); /* 4 buttons per row */
+  gap: 10px; /* Consistent spacing between buttons */
+  width: 100%; /* Ensure buttons span the container */
 }
 
 .calc-btn {
   font-size: 1.5em;
-  background: #1a1a1a;
+  padding: 20px;
+  background: #1a1a1a; /* Darker button color */
   color: #00bfff;
   border: 1px solid #444;
-  padding: 15px;
   border-radius: 5px;
-  transition: background 0.3s ease, color 0.3s ease;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
 }
 
 .calc-btn:hover {
+  background: #00bfff; /* Lighter blue on hover */
+  color: #1a1a1a;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+#calc-equals {
+  grid-column: span 3; /* Make the equals button span two columns */
+  background: #1a1a1a; /* Uniform color with other buttons */
+  color: #00bfff; /* Match the theme */
+  font-size: 1.7em;
+  font-weight: bold;
+  padding: 20px; /* Adjust padding for a larger button */
+}
+
+#calc-clear {
+  background: #1a1a1a; /* Uniform color with other buttons */
+  color: #00bfff; /* Match the theme */
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+#calc-clear:hover,
+#calc-equals:hover {
   background: #00bfff;
   color: #1a1a1a;
+  transform: scale(1.05);
+}
+
+/* To-Do List */
+#todo-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+#todo-input {
+  width: 100%;
+  margin-bottom: 10px;
+  font-size: 1em;
+  border-radius: 5px;
+  border: 1px solid #444;
+  background: #2a2a2a;
+  color: #f0f0f0;
+}
+
+#todo-input:focus {
+  outline: none;
+  border-color: #00bfff;
+  box-shadow: 0 0 10px #00bfff;
+}
+
+#add-task-btn {
+  margin-bottom: 15px;
+}
+
+#todo-tasks {
+  list-style: none;
+  padding: 0;
+  width: 100%;
+}
+
+#todo-tasks li {
+  display: flex;
+  align-items: center; /* Align items vertically */
+  justify-content: space-between;
+  border-radius: 5px;
+  background: #2a2a2a;
+  color: #f0f0f0;
+  margin-bottom: 5px; /* Reduce spacing between tasks */
+  font-size: 1em; /* Ensure text size is appropriate */
+  line-height: 1.2; /* Adjust line height for compactness */
+}
+
+#todo-tasks li input[type="checkbox"] {
+  margin-right: 10px; /* Adjust spacing around the checkbox */
+}
+
+#todo-tasks li.completed {
+  text-decoration: line-through;
+  color: #888;
+}
+
+#todo-tasks li button {
+  background: transparent;
+  border: none;
+  color: #dc3545;
+  font-size: 1.2em;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+#todo-tasks li button:hover {
+  color: #ff6666;
 }
 
 /* Footer */
@@ -171,7 +311,6 @@ footer {
   padding: 15px;
   border-top: 1px solid #444;
   width: 100%;
-  margin-top: 20px;
 }
 
 footer a {
@@ -183,16 +322,13 @@ footer a:hover {
   text-decoration: underline;
 }
 
+/* Responsive Adjustments */
 @media (max-width: 768px) {
   main {
-    grid-template-columns: 1fr;
-  }
-
-  button {
-    font-size: 0.9em;
-    padding: 8px 12px;
+    grid-template-columns: 1fr; /* Single column for smaller screens */
   }
 }
+
 
 
 
