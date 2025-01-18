@@ -245,14 +245,14 @@ const populateLanguages = async () => {
             sourceOption.value = language.code
             sourceOption.textContent = language.name
 
-            const targetOption = sourceOption.cloneNode(true) // Clone for the target dropdown
+            const targetOption = sourceOption.cloneNode(true) 
 
             sourceLangDropdown.appendChild(sourceOption)
             targetLangDropdown.appendChild(targetOption)
         })
 
-        sourceLangDropdown.value = 'en' // Default to English
-        targetLangDropdown.value = 'es' // Default to Spanish
+        sourceLangDropdown.value = 'en' 
+        targetLangDropdown.value = 'es'
     } catch (error) {
         console.error('Error fetching languages:', error)
         alert('Failed to fetch language list. Please try again later.')
@@ -407,6 +407,104 @@ document.getElementById('calc-buttons').addEventListener('click', event => {
 })
 
 updateDisplay()
+
+const todoInput = document.getElementById('todo-input')
+const addTaskBtn = document.getElementById('add-task-btn')
+const todoTasks = document.getElementById('todo-tasks')
+
+const addTask = () => {
+  const taskText = todoInput.value.trim()
+  if (taskText === '') {
+    alert('Please enter a task.')
+    return
+  }
+
+  const li = document.createElement('li')
+
+  const checkbox = document.createElement('input')
+  checkbox.type = 'checkbox'
+  checkbox.addEventListener('change', () => {
+    if (checkbox.checked) {
+      li.classList.add('completed')
+    } else {
+      li.classList.remove('completed')
+    }
+    saveTasks()
+  })
+
+  const taskSpan = document.createElement('span')
+  taskSpan.textContent = taskText
+
+  const deleteBtn = document.createElement('button')
+  deleteBtn.textContent = '✕'
+  deleteBtn.addEventListener('click', () => {
+    li.remove()
+    saveTasks()
+  })
+
+  li.appendChild(checkbox)
+  li.appendChild(taskSpan)
+  li.appendChild(deleteBtn)
+  todoTasks.appendChild(li)
+
+  todoInput.value = ''
+  saveTasks()
+}
+
+const saveTasks = () => {
+  const tasks = []
+  document.querySelectorAll('#todo-tasks li').forEach(li => {
+    tasks.push({
+      text: li.querySelector('span').textContent,
+      completed: li.classList.contains('completed'),
+    })
+  })
+  localStorage.setItem('todoTasks', JSON.stringify(tasks))
+}
+
+const loadTasks = () => {
+  const savedTasks = JSON.parse(localStorage.getItem('todoTasks')) || []
+  savedTasks.forEach(task => {
+    const li = document.createElement('li')
+
+    const checkbox = document.createElement('input')
+    checkbox.type = 'checkbox'
+    checkbox.checked = task.completed
+    if (task.completed) {
+      li.classList.add('completed')
+    }
+    checkbox.addEventListener('change', () => {
+      if (checkbox.checked) {
+        li.classList.add('completed')
+      } else {
+        li.classList.remove('completed')
+      }
+      saveTasks()
+    })
+
+    const taskSpan = document.createElement('span')
+    taskSpan.textContent = task.text
+
+    const deleteBtn = document.createElement('button')
+    deleteBtn.textContent = '✕'
+    deleteBtn.addEventListener('click', () => {
+      li.remove()
+      saveTasks()
+    })
+
+    li.appendChild(checkbox)
+    li.appendChild(taskSpan)
+    li.appendChild(deleteBtn)
+    todoTasks.appendChild(li)
+  })
+}
+
+addTaskBtn.addEventListener('click', addTask)
+todoInput.addEventListener('keydown', event => {
+  if (event.key === 'Enter') addTask()
+})
+
+loadTasks()
 
 
 
