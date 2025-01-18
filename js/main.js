@@ -53,7 +53,10 @@ const fetchWeather = async (latitude, longitude) => {
         document.getElementById('weatherResult').innerHTML = result
     } catch (error) {
         console.error('Error fetching weather data:', error)
-        document.getElementById('weatherResult').innerHTML = '<p>Error fetching weather data</p>'
+        if (!document.getElementById('weatherResult').innerHTML.includes('Error')) {
+    document.getElementById('weatherResult').innerHTML = '<p>Error fetching weather data</p>'
+}
+
     }
 }
 
@@ -81,19 +84,6 @@ document.getElementById('getWeather').addEventListener('click', async () => {
         document.getElementById('weatherResult').innerHTML = '<p>Error fetching city coordinates</p>'
     }
 })
-
-const displayWeather = data => {
-    if (data.cod === 200) {
-        const result = `
-            <p>Temperature: ${data.main.temp}°C</p>
-            <p>Weather: ${data.weather[0].description}</p>
-            <p>Humidity: ${data.main.humidity}%</p>
-        `
-        weatherResult.innerHTML = result
-    } else {
-        weatherResult.innerHTML = '<p>City not found</p>'
-    }
-}
 
 const handleError = (message, error) => {
     console.error(message, error)
@@ -129,14 +119,29 @@ cityInput.addEventListener('input', () => {
     fetchCitySuggestions(query)
 })
 
-cityInput.addEventListener('keydown', event => {
+cityInput.addEventListener('keydown', async event => {
     if (event.key === 'Enter') {
         const city = cityInput.value.trim()
         if (!city) {
             alert('Please enter a city name')
             return
         }
-        fetchWeather(city)
+
+        try {
+            const response = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1&language=en&format=json`)
+            if (!response.ok) throw new Error('City not found')
+
+            const data = await response.json()
+            if (data.results && data.results.length > 0) {
+                const { latitude, longitude } = data.results[0]
+                fetchWeather(latitude, longitude) 
+            } else {
+                weatherResult.innerHTML = '<p>City not found</p>'
+            }
+        } catch (error) {
+            console.error('Error fetching city coordinates:', error)
+            weatherResult.innerHTML = '<p>Error fetching city coordinates</p>'
+        }
     }
 })
 
@@ -144,6 +149,9 @@ const fetchCurrencies = async () => {
     try {
         const response = await fetch(CURRENCY_API_URL)
         const data = await response.json()
+
+        console.log('Currency Rates:', data.rates) 
+
         populateCurrencyDropdowns(data.rates)
     } catch (error) {
         console.error('Error fetching currencies:', error)
@@ -151,18 +159,23 @@ const fetchCurrencies = async () => {
 }
 
 const populateCurrencyDropdowns = rates => {
+    console.log('Rates received:', rates)
     const fromCurrency = document.getElementById('from-currency')
     const toCurrency = document.getElementById('to-currency')
-    Object.keys(rates).forEach(currency => {
-        const optionFrom = document.createElement('option')
-        const optionTo = document.createElement('option')
-        optionFrom.value = currency
-        optionTo.value = currency
-        optionFrom.textContent = currency
-        optionTo.textContent = currency
-        fromCurrency.appendChild(optionFrom)
-        toCurrency.appendChild(optionTo)
-    })
+    fromCurrency.innerHTML = '<option value="" disabled selected>Select currency</option>'
+toCurrency.innerHTML = '<option value="" disabled selected>Select currency</option>'
+
+
+Object.keys(rates).forEach(currency => {
+    const optionFrom = document.createElement('option')
+    const optionTo = document.createElement('option')
+    optionFrom.value = currency
+    optionTo.value = currency
+    optionFrom.textContent = currency
+    optionTo.textContent = currency
+    fromCurrency.appendChild(optionFrom)
+    toCurrency.appendChild(optionTo)
+})
     fromCurrency.value = 'USD'
     toCurrency.value = 'EUR'
 }
@@ -184,12 +197,16 @@ const convertCurrency = async () => {
     }
 
     try {
-        const response = await fetch(`${CURRENCY_API_URL}/${fromCurrency}`)
+        const response = await fetch(CURRENCY_API_URL)
         const data = await response.json()
-        const conversionRate = data.rates[toCurrency]
-        if (conversionRate) {
+
+        const fromRate = data.rates[fromCurrency]
+        const toRate = data.rates[toCurrency]
+
+        if (fromRate && toRate) {
+            const conversionRate = toRate / fromRate
             const result = (amount * conversionRate).toFixed(2)
-            resultContainer.textContent = `${amount} ${fromCurrency} = ${result} ${toCurrency}`
+            resultContainer.textContent = `${amount} ${fromCurrency} = ${result} ${toCurrency}` 
         } else {
             resultContainer.textContent = 'Conversion rate not available'
         }
@@ -199,7 +216,199 @@ const convertCurrency = async () => {
     }
 }
 
-
 document.getElementById('convert').addEventListener('click', convertCurrency)
 
+document.getElementById('from-currency').addEventListener('change', event => {
+    console.log('From Currency Selected:', event.target.value) 
+})
+
+document.getElementById('to-currency').addEventListener('change', event => {
+    console.log('To Currency Selected:', event.target.value) 
+})
+
 fetchCurrencies()
+
+const populateLanguages = async () => {
+    try {
+        const response = await fetch('languages.json') 
+        if (!response.ok) throw new Error('Failed to fetch languages')
+
+        const languages = await response.json()
+        const sourceLangDropdown = document.getElementById('source-lang')
+        const targetLangDropdown = document.getElementById('target-lang')
+
+        sourceLangDropdown.innerHTML = ''
+        targetLangDropdown.innerHTML = ''
+
+        languages.forEach(language => {
+            const sourceOption = document.createElement('option')
+            sourceOption.value = language.code
+            sourceOption.textContent = language.name
+
+            const targetOption = sourceOption.cloneNode(true) // Clone for the target dropdown
+
+            sourceLangDropdown.appendChild(sourceOption)
+            targetLangDropdown.appendChild(targetOption)
+        })
+
+        sourceLangDropdown.value = 'en' // Default to English
+        targetLangDropdown.value = 'es' // Default to Spanish
+    } catch (error) {
+        console.error('Error fetching languages:', error)
+        alert('Failed to fetch language list. Please try again later.')
+    }
+}
+
+document.addEventListener('DOMContentLoaded', populateLanguages)
+
+
+const translateText = async () => {
+    const text = document.getElementById('text-to-translate').value.trim()
+    const sourceLang = document.getElementById('source-lang').value
+    const targetLang = document.getElementById('target-lang').value
+    const resultContainer = document.getElementById('translation-result')
+
+    if (!text) {
+        alert('Please enter text to translate')
+        return
+    }
+
+    try {
+        const response = await fetch(
+            `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${sourceLang}|${targetLang}`
+        )
+        const data = await response.json()
+
+        if (data.responseData && data.responseData.translatedText) {
+            resultContainer.textContent = data.responseData.translatedText
+        } else {
+            resultContainer.textContent = 'Translation failed'
+        }
+    } catch (error) {
+        console.error('Error translating text:', error)
+        resultContainer.textContent = 'Error translating text'
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    populateLanguages() 
+})
+
+document.getElementById('translate-btn').addEventListener('click', translateText)
+
+const calculator = {
+    displayValue: '0', 
+    firstOperand: null,
+    waitingForSecondOperand: false, 
+    operator: null 
+}
+
+const updateDisplay = () => {
+    const display = document.getElementById('calc-input')
+    display.value = calculator.displayValue
+}
+
+const inputDigit = digit => {
+    const { displayValue, waitingForSecondOperand } = calculator
+
+    if (waitingForSecondOperand) {
+        calculator.displayValue = digit
+        calculator.waitingForSecondOperand = false
+    } else {
+        calculator.displayValue =
+            displayValue === '0' ? digit : displayValue + digit
+    }
+}
+
+const inputDecimal = dot => {
+    if (calculator.waitingForSecondOperand) return
+
+    if (!calculator.displayValue.includes(dot)) {
+        calculator.displayValue += dot
+    }
+}
+
+const handleOperator = nextOperator => {
+    const { firstOperand, displayValue, operator, waitingForSecondOperand } =
+        calculator
+    const inputValue = parseFloat(displayValue)
+
+    if (operator && waitingForSecondOperand) {
+        calculator.operator = nextOperator
+        return
+    }
+
+    if (firstOperand == null && !isNaN(inputValue)) {
+        calculator.firstOperand = inputValue
+    } else if (operator) {
+        const result = calculate(firstOperand, inputValue, operator)
+
+        calculator.displayValue = `${parseFloat(result.toFixed(7))}`
+        calculator.firstOperand = result
+    }
+
+    calculator.waitingForSecondOperand = true
+    calculator.operator = nextOperator
+}
+
+const calculate = (firstOperand, secondOperand, operator) => {
+    switch (operator) {
+        case '+':
+            return firstOperand + secondOperand
+        case '-':
+            return firstOperand - secondOperand
+        case '*':
+            return firstOperand * secondOperand
+        case '/':
+            return firstOperand / secondOperand
+        default:
+            return secondOperand
+    }
+}
+
+const resetCalculator = () => {
+    calculator.displayValue = '0'
+    calculator.firstOperand = null
+    calculator.waitingForSecondOperand = false
+    calculator.operator = null
+}
+
+document.getElementById('calc-buttons').addEventListener('click', event => {
+    const { target } = event
+    const { value } = target.dataset
+
+    if (!target.classList.contains('calc-btn')) return
+
+    if (target.id === 'calc-clear') {
+        resetCalculator()
+        updateDisplay()
+        return
+    }
+
+    if (target.id === 'calc-equals') {
+        handleOperator(null)
+        updateDisplay()
+        return
+    }
+
+    if (target.classList.contains('operator')) {
+        handleOperator(value)
+        updateDisplay()
+        return
+    }
+
+    if (value === '.') {
+        inputDecimal(value)
+    } else {
+        inputDigit(value)
+    }
+
+    updateDisplay()
+})
+
+updateDisplay()
+
+
+
+
+
