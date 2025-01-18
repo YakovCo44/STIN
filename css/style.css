@@ -15,6 +15,7 @@ html {
 #logo-container {
   text-align: center;
   margin: 20px;
+  border-radius: 25px;
 }
 
 #stin-logo {
