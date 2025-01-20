@@ -37,7 +37,10 @@ const getWeatherDescription = code => {
 
 const fetchWeather = async (latitude, longitude) => {
     const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`
-
+    const showLoading = () => {
+    weatherResult.innerHTML = '<div class="loading-spinner"></div>'
+}
+  
     try {
         const response = await fetch(url)
         if (!response.ok) throw new Error('Failed to fetch weather data')
@@ -505,6 +508,154 @@ todoInput.addEventListener('keydown', event => {
 })
 
 loadTasks()
+
+document.addEventListener('DOMContentLoaded', async function () {
+  const conversionType = document.getElementById('conversion-type')
+  const fromUnit = document.getElementById('from-unit')
+  const toUnit = document.getElementById('to-unit')
+  const inputValue = document.getElementById('input-value')
+  const resultValue = document.getElementById('result-value')
+  let conversionData = null
+
+  async function loadConversionData() {
+    try {
+      const response = await fetch('./units.json')
+      if (!response.ok) throw new Error('Failed to fetch conversion data')
+      conversionData = await response.json()
+    } catch (error) {
+      console.error('Error loading conversion data:', error)
+      alert('Failed to load conversion data. Please try again later.')
+    }
+  }
+
+  function updateUnits() {
+    const type = conversionType.value
+    if (!conversionData || !conversionData[type]) return
+
+    const units = conversionData[type].units
+    fromUnit.innerHTML = ''
+    toUnit.innerHTML = ''
+
+    units.forEach(unit => {
+      const option1 = document.createElement('option')
+      option1.value = unit
+      option1.textContent = unit
+      fromUnit.appendChild(option1)
+
+      const option2 = document.createElement('option')
+      option2.value = unit
+      option2.textContent = unit
+      toUnit.appendChild(option2)
+    })
+  }
+
+function convert() {
+  console.log('Convert button clicked')
+  console.log('Conversion Type:', conversionType.value)
+  console.log('Input Value:', inputValue.value)
+  console.log('From Unit:', fromUnit.value)
+  console.log('To Unit:', toUnit.value)
+
+  const type = conversionType.value
+  const value = parseFloat(inputValue.value)
+  const from = fromUnit.value
+  const to = toUnit.value
+
+  document.getElementById('unit-conversion-result').style.display = 'none'
+
+  if (!conversionData || !conversionData[type]) {
+    resultValue.textContent = 'Error: Conversion data not loaded'
+    document.getElementById('unit-conversion-result').style.display = 'block'
+    console.log('Error: Conversion data not loaded')
+    return
+  }
+
+  if (!value || isNaN(value)) {
+    resultValue.textContent = 'Please enter a valid number'
+    document.getElementById('unit-conversion-result').style.display = 'block'
+    console.log('Error: Invalid input value')
+    return
+  }
+
+  const multiplier = conversionData[type].conversions[from]?.[to]
+  if (multiplier === undefined) {
+    resultValue.textContent = 'Conversion not possible with selected units'
+    document.getElementById('unit-conversion-result').style.display = 'block'
+    console.log('Error: Invalid units selected')
+    return
+  }
+
+  const result = value * multiplier
+  resultValue.textContent = `${result.toFixed(2)} ${to}`
+  document.getElementById('unit-conversion-result').style.display = 'block'
+  console.log('Conversion Result:', result)
+}
+
+  conversionType.addEventListener('change', updateUnits)
+  document.getElementById('convert-btn').addEventListener('click', convert)
+
+  await loadConversionData()
+  updateUnits()
+})
+
+document.addEventListener('DOMContentLoaded', function () {
+  const noteInput = document.getElementById('note-input')
+  const addNoteBtn = document.getElementById('add-note-btn')
+  const notesList = document.getElementById('notes-list')
+  const myNotesTitle = document.getElementById('my-notes-title')
+
+  const loadNotes = () => {
+    const notes = JSON.parse(localStorage.getItem('notes')) || []
+    notesList.innerHTML = ''
+    if (notes.length > 0) myNotesTitle.style.display = 'block'
+    notes.forEach((note, index) => createNoteElement(note, index))
+  }
+
+  const saveNotes = () => {
+    const notes = []
+    document.querySelectorAll('#notes-list li textarea').forEach(noteTextarea => {
+      notes.push(noteTextarea.value)
+    })
+    localStorage.setItem('notes', JSON.stringify(notes))
+    myNotesTitle.style.display = notes.length > 0 ? 'block' : 'none'
+  }
+
+  const createNoteElement = (noteText) => {
+    const li = document.createElement('li')
+
+    const noteTextarea = document.createElement('textarea')
+    noteTextarea.value = noteText
+    noteTextarea.rows = 3 
+    noteTextarea.addEventListener('input', saveNotes) 
+    li.appendChild(noteTextarea)
+
+    const deleteBtn = document.createElement('button')
+    deleteBtn.textContent = '✕'
+    deleteBtn.addEventListener('click', () => {
+      li.remove()
+      saveNotes()
+    })
+    li.appendChild(deleteBtn)
+
+    notesList.appendChild(li)
+  }
+
+  addNoteBtn.addEventListener('click', () => {
+    const noteText = noteInput.value.trim()
+    if (noteText === '') {
+      alert('Please enter a note.')
+      return
+    }
+
+    createNoteElement(noteText)
+    saveNotes()
+    noteInput.value = '' 
+  })
+
+  loadNotes()
+})
+
+
 
 
 
