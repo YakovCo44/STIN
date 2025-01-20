@@ -94,6 +94,42 @@
         <ul id="todo-tasks"></ul>
       </div>
     </section>
+
+<section id="unit-converter" class="feature-block">
+  <h2>Unit Converter</h2>
+  <label for="conversion-type">Choose Conversion Type:</label>
+  <select id="conversion-type">
+    <option value="length">Length</option>
+    <option value="weight">Weight</option>
+    <option value="temperature">Temperature</option>
+    <option value="volume">Volume</option>
+  </select>
+
+  <section id="converter-fields">
+    <label for="input-value">Value:</label>
+    <input type="number" id="input-value" placeholder="Enter value" />
+
+    <label for="from-unit">From:</label>
+    <select id="from-unit"></select>
+
+    <label for="to-unit">To:</label>
+    <select id="to-unit"></select>
+  </section>
+
+  <button id="convert-btn">Convert</button>
+  <p id="unit-conversion-result">Result: <span id="result-value"></span></p>
+</section>
+
+<section id="notes" class="feature-block">
+  <h2>Notes</h2>
+  <div id="notes-container">
+    <textarea id="note-input" placeholder="Write your note here..."></textarea>
+    <button id="add-note-btn">Add Note</button>
+    <h3 id="my-notes-title" style="display: none;">My Notes:</h3>
+    <ul id="notes-list"></ul>
+  </div>
+</section>
+
   </main>
 
   <footer>
