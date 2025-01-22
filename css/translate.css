@@ -1,0 +1,19 @@
+/* Translator */
+#translation-result {
+    margin-top: 20px;
+    font-size: 1.2em;
+    color: #e0e0e0;
+  }
+  
+  #to-currency,
+  #source-lang,
+  #target-lang {
+    margin: 10px;
+  }
+  
+  #translator label {
+    margin: 20px; /* Add spacing between dropdowns and labels */
+    color: #00bfff;
+    font-size: 1em;
+    font-weight: bold;
+  }

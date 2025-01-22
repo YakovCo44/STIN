@@ -1,0 +1,69 @@
+/* To-Do List */
+#todo-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto;
+  }
+  
+  #todo-input {
+    width: 100%;
+    margin-bottom: 10px;
+    font-size: 1em;
+    border-radius: 5px;
+    border: 1px solid #444;
+    background: #2a2a2a;
+    color: #f0f0f0;
+  }
+  
+  #todo-input:focus {
+    outline: none;
+    border-color: #00bfff;
+    box-shadow: 0 0 10px #00bfff;
+  }
+  
+  #add-task-btn {
+    margin-bottom: 15px;
+  }
+  
+  #todo-tasks {
+    list-style: none;
+    padding: 0;
+    width: 100%;
+  }
+  
+  #todo-tasks li {
+    display: flex;
+    align-items: center; /* Align items vertically */
+    justify-content: space-between;
+    border-radius: 5px;
+    background: #2a2a2a;
+    color: #f0f0f0;
+    margin-bottom: 5px; /* Reduce spacing between tasks */
+    font-size: 1em; /* Ensure text size is appropriate */
+    line-height: 1.2; /* Adjust line height for compactness */
+  }
+  
+  #todo-tasks li input[type="checkbox"] {
+    margin-right: 10px; /* Adjust spacing around the checkbox */
+  }
+  
+  #todo-tasks li.completed {
+    text-decoration: line-through;
+    color: #888;
+  }
+  
+  #todo-tasks li button {
+    background: transparent;
+    border: none;
+    color: #dc3545;
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: color 0.3s ease;
+  }
+  
+  #todo-tasks li button:hover {
+    color: #ff6666;
+  }

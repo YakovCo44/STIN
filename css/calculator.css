@@ -1,0 +1,73 @@
+/* Calculator */
+#calc-container {
+    width: 100%;
+    max-width: 320px; /* Ensure a consistent width */
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    background: #242424; /* Match the block style */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center contents horizontally */
+    justify-content: center; /* Center contents vertically */
+  }
+  
+  #calc-input {
+    width: 100%;
+    font-size: 2em;
+    padding: 10px;
+    border: none;
+    background: #1a1a1a;
+    color: #00bfff;
+    border-radius: 5px;
+    text-align: right;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
+  }
+  
+  #calc-buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 buttons per row */
+    gap: 10px; /* Consistent spacing between buttons */
+    width: 100%; /* Ensure buttons span the container */
+  }
+  
+  .calc-btn {
+    font-size: 1.5em;
+    padding: 20px;
+    background: #1a1a1a; /* Darker button color */
+    color: #00bfff;
+    border: 1px solid #444;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+  }
+  
+  .calc-btn:hover {
+    background: #00bfff; /* Lighter blue on hover */
+    color: #1a1a1a;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  }
+  
+  #calc-equals {
+    grid-column: span 3; /* Make the equals button span two columns */
+    background: #1a1a1a; /* Uniform color with other buttons */
+    color: #00bfff; /* Match the theme */
+    font-size: 1.7em;
+    font-weight: bold;
+    padding: 20px; /* Adjust padding for a larger button */
+  }
+  
+  #calc-clear {
+    background: #1a1a1a; /* Uniform color with other buttons */
+    color: #00bfff; /* Match the theme */
+    font-size: 1.5em;
+    font-weight: bold;
+  }
+  
+  #calc-clear:hover,
+  #calc-equals:hover {
+    background: #00bfff;
+    color: #1a1a1a;
+    transform: scale(1.05);
+  }

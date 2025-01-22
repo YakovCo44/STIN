@@ -1,0 +1,13 @@
+/* Currency Converter */
+#conversion-result {
+    margin-top: 20px;
+    font-size: 1.2em;
+    color: #e0e0e0;
+  }
+  
+  #currency-converter span {
+    margin: 20px; /* Space around the "to" text */
+    color: #00bfff; /* Matches button styles */
+    font-weight: bold;
+    font-size: 1em;
+  }

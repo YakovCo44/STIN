@@ -1,0 +1,191 @@
+/* General Styles */
+body,
+html {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  font-family: 'Roboto', sans-serif;
+  color: #f0f0f0; /* Light text */
+  background: #1a1a1a; /* Dark background */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Logo Section */
+#logo-container {
+  text-align: center;
+  margin: 20px;
+}
+
+#stin-logo {
+  max-width: 300px;
+  height: auto;
+  border-radius: 25px;
+}
+
+/* Main Grid Layout */
+main {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Uniform width */
+  grid-auto-rows: auto; /* Height adjusts based on content */
+  gap: 20px; /* Space between blocks */
+  width: 90%;
+  max-width: 1200px;
+  margin: 20px auto;
+  align-items: start; /* Aligns blocks to the top */
+  justify-items: stretch; /* Stretches blocks to fit column width */
+  grid-auto-flow: dense; /* Fills gaps in the layout efficiently */
+  grid-template-rows: auto 1fr;
+}
+
+/* Scrollbar for WebKit browsers (Chrome, Edge, Safari) */
+::-webkit-scrollbar {
+    width: 10px; /* Width of the scrollbar */
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: #1a1a1a; /* Dark background for the track */
+    border-radius: 5px; /* Rounded edges for the track */
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: #00bfff; /* Neon blue scrollbar thumb */
+    border-radius: 5px; /* Rounded edges for the thumb */
+    border: 2px solid #1a1a1a; /* Space around the thumb */
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: #0056b3; /* Darker blue on hover */
+  }
+  
+  /* Scrollbar for Firefox */
+  * {
+    scrollbar-color: #00bfff #1a1a1a; /* Thumb color and track color */
+    scrollbar-width: wide; /* Slim scrollbar */
+  }  
+
+/* Block Styles */
+.feature-block {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  text-align: center;
+  background: #242424;
+  border-radius: 25px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feature-block:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.3);
+}
+
+.feature-block h2 {
+  font-size: 1.5em;
+  margin-bottom: 15px;
+  color: #00bfff; /* Neon blue for headings */
+  text-shadow: 0 0 10px #00bfff;
+}
+
+.feature-block input,
+.feature-block select,
+.feature-block button,
+.feature-block textarea {
+  margin-bottom: 15px; /* Add spacing between elements */
+  width: 90%; /* Adjust width to prevent overflow */
+  max-width: 300px; /* Keep inputs/buttons compact */
+}
+
+/* Buttons */
+button {
+  background: linear-gradient(45deg, #007bff, #00bfff);
+  border: none;
+  color: #fff;
+  padding: 10px 15px;
+  font-size: 1em;
+  cursor: pointer;
+  border-radius: 5px;
+  text-transform: uppercase;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+  background: linear-gradient(45deg, #0056b3, #007bff);
+  transform: translateY(-2px);
+}
+
+button:active {
+  transform: translateY(1px);
+}
+
+/* Inputs and Textareas */
+input,
+select,
+textarea {
+  background: #2a2a2a;
+  border: 1px solid #444;
+  color: #f0f0f0;
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 1em;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: #00bfff;
+  box-shadow: 0 0 10px #00bfff;
+}
+
+/* Footer */
+footer {
+  background: #1a1a1a;
+  color: #f0f0f0;
+  text-align: center;
+  padding: 15px;
+  border-top: 1px solid #444;
+  width: 100%;
+}
+
+footer a {
+  color: #00bfff;
+  text-decoration: none;
+}
+
+footer a:hover {
+  text-decoration: underline;
+}
+
+.loading-spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #00bfff;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    animation: spin 1s linear infinite;
+    margin: auto;
+    display: block;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  main {
+    grid-template-columns: 1fr; /* Single column for smaller screens */
+  }
+}
+
+
+
