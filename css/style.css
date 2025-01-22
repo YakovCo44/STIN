@@ -56,6 +56,23 @@ main {
     text-align: center; /* Center align the clock text */
 }
 
+#date-container {
+    position: absolute; /* Position in the upper-right corner */
+    top: 10px;
+    right: 10px;
+    font-size: 24px; /* Font size for better visibility */
+    font-family: 'Arial', sans-serif; /* Clean and modern font */
+    color: #00bfff; /* Neon blue color for the text */
+    text-shadow: 0 0 5px #00bfff; /* Neon glow effect for the text */
+    background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent black background */
+    padding: 10px; /* Spacing around the text */
+    border: 2px solid #00bfff; /* Neon blue border */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 0 15px #00bfff; /* Glowing effect around the date box */
+    z-index: 1000; /* Keep it on top of other elements */
+    text-align: center; /* Center align the date text */
+}
+
 /* Scrollbar for WebKit browsers (Chrome, Edge, Safari) */
 ::-webkit-scrollbar {
     width: 10px; /* Width of the scrollbar */
