@@ -4,85 +4,106 @@ document.addEventListener('DOMContentLoaded', async function () {
     const toUnit = document.getElementById('to-unit')
     const inputValue = document.getElementById('input-value')
     const resultValue = document.getElementById('result-value')
+    const conversionResultContainer = document.getElementById('unit-conversion-result')
     let conversionData = null
-  
+
     async function loadConversionData() {
-      try {
-        const response = await fetch('./json/units.json')
-        if (!response.ok) throw new Error('Failed to fetch conversion data')
-        conversionData = await response.json()
-      } catch (error) {
-        console.error('Error loading conversion data:', error)
-        alert('Failed to load conversion data. Please try again later.')
-      }
+        try {
+            const response = await fetch('./json/units.json')
+            if (!response.ok) throw new Error('Failed to fetch conversion data.')
+            conversionData = await response.json()
+            console.log('Conversion Data Loaded:', conversionData) 
+        } catch (error) {
+            console.error('Error loading conversion data:', error)
+            alert('Failed to load conversion data. Please try again later.')
+        }
     }
-  
+
     function updateUnits() {
-      const type = conversionType.value
-      if (!conversionData || !conversionData[type]) return
-  
-      const units = conversionData[type].units
-      fromUnit.innerHTML = ''
-      toUnit.innerHTML = ''
-  
-      units.forEach(unit => {
-        const option1 = document.createElement('option')
-        option1.value = unit
-        option1.textContent = unit
-        fromUnit.appendChild(option1)
-  
-        const option2 = document.createElement('option')
-        option2.value = unit
-        option2.textContent = unit
-        toUnit.appendChild(option2)
-      })
+        const type = conversionType.value
+        if (!conversionData || !conversionData[type]) {
+            console.error('No data for type:', type)
+            return
+        }
+
+        const units = conversionData[type].units
+        const options = units.map(unit => `<option value="${unit}">${unit}</option>`).join('')
+
+        fromUnit.innerHTML = options
+        toUnit.innerHTML = options
     }
-  
-  function convert() {
-    console.log('Convert button clicked')
-    console.log('Conversion Type:', conversionType.value)
-    console.log('Input Value:', inputValue.value)
-    console.log('From Unit:', fromUnit.value)
-    console.log('To Unit:', toUnit.value)
-  
-    const type = conversionType.value
+
+    function validateConversionInputs(value, from, to) {
+        if (!value || isNaN(value)) {
+            alert('Please enter a valid number.')
+            return false
+        }
+        if (!from || !to) {
+            alert('Please select valid units.')
+            return false
+        }
+        return true
+    }
+
+function convert() {
     const value = parseFloat(inputValue.value)
     const from = fromUnit.value
     const to = toUnit.value
-  
-    document.getElementById('unit-conversion-result').style.display = 'none'
-  
+    const type = conversionType.value
+
+    console.log('Conversion Type:', type)
+    console.log('From Unit:', from, 'To Unit:', to)
+    console.log('Input Value:', value) 
+
+    conversionResultContainer.style.display = 'none'
+
+    if (!validateConversionInputs(value, from, to)) return
+
+    conversionResultContainer.innerHTML = '<div class="loading-spinner"></div>'
+    conversionResultContainer.style.display = 'block'
+
     if (!conversionData || !conversionData[type]) {
-      resultValue.textContent = 'Error: Conversion data not loaded'
-      document.getElementById('unit-conversion-result').style.display = 'block'
-      console.log('Error: Conversion data not loaded')
-      return
+        console.error('Conversion data not loaded for type:', type) 
+        conversionResultContainer.innerHTML = '<p>Error: Conversion data not loaded.</p>'
+        return
     }
-  
-    if (!value || isNaN(value)) {
-      resultValue.textContent = 'Please enter a valid number'
-      document.getElementById('unit-conversion-result').style.display = 'block'
-      console.log('Error: Invalid input value')
-      return
-    }
-  
+
     const multiplier = conversionData[type].conversions[from]?.[to]
-    if (multiplier === undefined) {
-      resultValue.textContent = 'Conversion not possible with selected units'
-      document.getElementById('unit-conversion-result').style.display = 'block'
-      console.log('Error: Invalid units selected')
-      return
+    console.log('Multiplier:', multiplier) 
+
+    let result
+    if (type === 'temperature' && typeof multiplier === 'string') {
+        try {
+            const formulaFunction = eval(multiplier) 
+            result = formulaFunction(value)
+            console.log('Evaluated Result:', result) 
+        } catch (error) {
+            console.error('Error evaluating temperature formula:', error)
+            conversionResultContainer.innerHTML = '<p>Error calculating temperature conversion.</p>'
+            return
+        }
+    } else if (typeof multiplier === 'number') {
+        result = value * multiplier
+    } else {
+        conversionResultContainer.innerHTML = '<p>Conversion not possible with selected units.</p>'
+        return
     }
-  
-    const result = value * multiplier
-    resultValue.textContent = `${result.toFixed(2)} ${to}`
-    document.getElementById('unit-conversion-result').style.display = 'block'
-    console.log('Conversion Result:', result)
-  }
-  
+
+    if (isNaN(result)) {
+        console.error('Invalid result:', result) 
+        conversionResultContainer.innerHTML = '<p>Error calculating conversion result.</p>'
+        return
+    }
+
+    console.log('Final Result:', result) 
+
+    conversionResultContainer.innerHTML = `<p>${value} ${from} = ${result.toFixed(2)} ${to}</p>`
+    conversionResultContainer.style.display = 'block'
+}
+
     conversionType.addEventListener('change', updateUnits)
     document.getElementById('convert-btn').addEventListener('click', convert)
-  
+
     await loadConversionData()
     updateUnits()
-  })
+})
