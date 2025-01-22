@@ -17,3 +17,15 @@ function updateClock() {
 setInterval(updateClock, 1000)
 updateClock()
 
+function updateDate() {
+    const dateContainer = document.getElementById('date-container')
+    const now = new Date()
+
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }
+    const formattedDate = now.toLocaleDateString(undefined, options)
+
+    dateContainer.textContent = formattedDate
+}
+
+updateDate()
+
