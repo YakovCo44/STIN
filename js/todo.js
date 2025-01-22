@@ -1,80 +1,91 @@
-document.addEventListener('DOMContentLoaded', async function () {
-    const conversionType = document.getElementById('conversion-type')
-    const fromUnit = document.getElementById('from-unit')
-    const toUnit = document.getElementById('to-unit')
-    const inputValue = document.getElementById('input-value')
-    const resultValue = document.getElementById('result-value')
-    const conversionResultContainer = document.getElementById('unit-conversion-result')
-    let conversionData = null
+document.addEventListener('DOMContentLoaded', function () {
+    const todoInput = document.getElementById('todo-input')
+    const addTaskBtn = document.getElementById('add-task-btn')
+    const todoTasks = document.getElementById('todo-tasks')
 
-    async function loadConversionData() {
-        try {
-            const response = await fetch('./json/units.json')
-            if (!response.ok) throw new Error('Failed to fetch conversion data.')
-            conversionData = await response.json()
-        } catch (error) {
-            console.error('Error loading conversion data:', error)
-            alert('Failed to load conversion data. Please try again later.')
-        }
+    function getStoredTasks() {
+        return JSON.parse(localStorage.getItem('todoTasks')) || []
     }
 
-    function updateUnits() {
-        const type = conversionType.value
-        if (!conversionData || !conversionData[type]) return
-
-        const units = conversionData[type].units
-        const options = units.map(unit => `<option value="${unit}">${unit}</option>`).join('')
-
-        fromUnit.innerHTML = options
-        toUnit.innerHTML = options
+    function storeTasks(tasks) {
+        localStorage.setItem('todoTasks', JSON.stringify(tasks))
     }
 
-    function validateConversionInputs(value, from, to) {
-        if (!value || isNaN(value)) {
-            alert('Please enter a valid number.')
-            return false
-        }
-        if (!from || !to) {
-            alert('Please select valid units.')
-            return false
-        }
-        return true
+    function saveTasks() {
+        const tasks = []
+        document.querySelectorAll('#todo-tasks li').forEach(li => {
+            tasks.push({
+                text: li.querySelector('span').textContent,
+                completed: li.classList.contains('completed'),
+            })
+        })
+        storeTasks(tasks)
     }
 
-    function convert() {
-        const value = parseFloat(inputValue.value)
-        const from = fromUnit.value
-        const to = toUnit.value
-        const type = conversionType.value
+    function createTaskElement(taskText, completed = false) {
+        const li = document.createElement('li')
+        li.classList.toggle('completed', completed)
 
-        conversionResultContainer.style.display = 'none'
+        const checkbox = document.createElement('input')
+        checkbox.type = 'checkbox'
+        checkbox.checked = completed
+        checkbox.addEventListener('change', () => {
+            li.classList.toggle('completed', checkbox.checked)
+            saveTasks()
+        })
 
-        if (!validateConversionInputs(value, from, to)) return
+        const taskSpan = document.createElement('span')
+        taskSpan.textContent = taskText
 
-        conversionResultContainer.innerHTML = '<div class="loading-spinner"></div>'
-        conversionResultContainer.style.display = 'block'
+        const deleteBtn = document.createElement('button')
+        deleteBtn.textContent = '✕'
+        deleteBtn.addEventListener('click', () => {
+            li.remove()
+            saveTasks()
+        })
 
-        if (!conversionData || !conversionData[type]) {
-            resultValue.textContent = 'Error: Conversion data not loaded.'
-            conversionResultContainer.style.display = 'block'
+        li.appendChild(checkbox)
+        li.appendChild(taskSpan)
+        li.appendChild(deleteBtn)
+        return li
+    }
+
+    function addTask() {
+        const taskText = todoInput.value.trim()
+        console.log('Task Text:', taskText)
+        if (taskText === '') {
+            alert('Please enter a task.')
             return
         }
 
-        const multiplier = conversionData[type].conversions[from]?.[to]
-        if (multiplier === undefined) {
-            resultValue.textContent = 'Conversion not possible with selected units.'
-            conversionResultContainer.style.display = 'block'
-            return
-        }
+        const taskElement = createTaskElement(taskText)
+        todoTasks.appendChild(taskElement)
 
-        const result = value * multiplier
-        resultValue.textContent = `${result.toFixed(2)} ${to}`
-        conversionResultContainer.style.display = 'block'
+        todoInput.value = ''
+        saveTasks()
     }
 
-    conversionType.addEventListener('change', updateUnits)
-    document.getElementById('convert-btn').addEventListener('click', convert)
+    function loadTasks() {
+        const savedTasks = getStoredTasks()
+        todoTasks.innerHTML = ''
+        savedTasks.forEach(task => {
+            const taskElement = createTaskElement(task.text, task.completed)
+            todoTasks.appendChild(taskElement)
+        })
+    }
 
-    await loadConversionData()
-    updateUnits()
+    addTaskBtn.addEventListener('click', () => {
+        console.log('Add Task button clicked') 
+        addTask()
+    })
+
+    todoInput.addEventListener('keydown', event => {
+        if (event.key === 'Enter') {
+            console.log('Enter key pressed') 
+            addTask()
+        }
+    })
+
+    loadTasks()
 })
+
